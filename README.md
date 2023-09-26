@@ -65,12 +65,12 @@ roll20-bot uses the following environment variables:
 - `$OPENAI_API_KEY` to store an OpenAI API key.
 - `$R20_EMAIL` to store the email associated with the account through which the bot acts.
 - `$R20_PASSWORD`to store the password of the account through which the bot acts.
-
+\
 These environment variables can be initialised through the associated [command-line arguments](#command-line-arguments), or with a [.env file](https://pypi.org/project/python-dotenv/) placed in the same directory as `main.py`. To enable the use of the `.env` file start the program with the `--env` argument.
 Command-line arguments overide the `.env` file, which in turn overrides pre-existing environment variable values.
 
 ## cf_clearance
-This program does not use the Roll20 API. Instead, it uses browser automation ([selenium webdriver](https://www.selenium.dev/)) to interact with the Roll20 GUI. Roll20 uses [Cloudflare challenges](https://developers.cloudflare.com/firewall/cf-firewall-rules/cloudflare-challenges/) to keep out automated accounts. When a challenge is passed, that user is given [a cookie named `cf_clearance`](https://developers.cloudflare.com/waf/tools/challenge-passage/#how-it-works) containing a token which allows them to continue using the site without having to solve future challenges. After about 30 minutes, this cookie expires and the challenge will have to be completed again (though the account won't be interupted in-game).
+This program does not use the Roll20 API. Instead, it uses browser automation ([selenium webdriver](https://www.selenium.dev/)) to interact with the Roll20 GUI. Roll20 uses [Cloudflare challenges](https://developers.cloudflare.com/firewall/cf-firewall-rules/cloudflare-challenges/) to keep out automated accounts. When a challenge is passed, that user is given [a cookie named `cf_clearance`](https://developers.cloudflare.com/waf/tools/challenge-passage/#how-it-works) containing a token which allows them to continue using the site without having to solve future challenges. After about 30 minutes, this cookie expires and the challenge will have to be completed again (though the account won't be interupted in-game).\
 
 Selenium can't pass Cloudflare challenges (though there exist forks which can - install one of those if you want to). To circumvent this, a `cf_clearance` token can be taken from another browser that *can* pass Cloudflare challenges and then that token can be used in the automated browser. This token is the value passed into roll20-bot's `--cf_clearance` argument or put in the `$R20_CF_CLEARANCE` environment variable (note: command-line arguments will override environment variables). To get a token:
 1. Open a browser (not Internet Explorer ffs)
@@ -85,10 +85,12 @@ Selenium can't pass Cloudflare challenges (though there exist forks which can - 
 ## settings.yaml
 This file is filled with example values. Replace them with your own.
 ### is_character
-Roll20's websource does not differentiate between the originators of messages except by image (which can often change mid-game) and name. Thus roll20-bot cannot differentiate between the originators of messages except by their displayed names. It also cannot differentiate between player accounts and characters - this information needs to be specified explicitly on a per-game basis. Each game is identified by its ID. If `enable_character_whitelist` is True, then any messages from names in `character_whitelist` will be considered as in-character, and all others as out-of-character. If `enable_character_blacklist` is True, then any messages from names in `character_blacklist` will be considered as out-of-character, and all others as in-character. If both `enable_character_whitelist` and `enable_character_blacklist` are True, then the whitelist will be applied minus any names in the blacklist.
+Roll20's websource does not differentiate between the originators of messages except by image (which can often change mid-game) and name. Thus roll20-bot cannot differentiate between the originators of messages except by their displayed names. It also cannot differentiate between player accounts and characters - this information needs to be specified explicitly on a per-game basis. \
+Each game is identified by its ID. If `enable_character_whitelist` is True, then any messages from names in `character_whitelist` will be considered as in-character, and all others as out-of-character. If `enable_character_blacklist` is True, then any messages from names in `character_blacklist` will be considered as out-of-character, and all others as in-character. If both `enable_character_whitelist` and `enable_character_blacklist` are True, then the whitelist will be applied minus any names in the blacklist.
 
 ### is_operator
-The bot can be issued [commands](#in-game-commands) through Roll20 chat. You must specify who is allowed to issue commands for each game by adding the names of operators/non-operators to your game's operator whitelist/blacklist under `is_operator`. This works in the same way as [`is_character`](#is_character).
+The bot can be issued [commands](#in-game-commands) through Roll20 chat. You must specify who is allowed to issue commands for each game by adding the names of operators/non-operators to your game's operator whitelist/blacklist under `is_operator`. This works in the same way as [`is_character`](#is_character).\
+
 Important note: Roll20's websource does not differentiate between the originators of messages except by image and name. So this program only uses names to tell apart different accounts and different characters. Thus if more than one person or character shares the same in-chat name, then roll20-bot will treat them as the same account/character. If a non-operator changes the name of their account or character to that of an operator, they can then issue commands. So if you were counting on being able to keep the power of operator out of the hands of your co-players, it would be best to just disable it (`enable_operator_whitelist : True` and `operator_whitelist : []`).
 
 ### model
@@ -109,29 +111,30 @@ Execute a command with `--help` to see its help message.
 The escape character is `\`.
 
 ### help:
-USAGE: %help
+USAGE: %help \
 View command help
 
 ### poke:
-USAGE: %poke
+USAGE: %poke \
 Force the bot to respond.
 
 ### character: 
-USAGE: %character '[character's display name]'
+USAGE: %character [character's display name] \
 Change which character the bot is controlling.
 
 ### system:
-USAGE: %system '[new system prompt]'
-Change the system prompt.
+USAGE: %system [new system prompt] \
+Change the system prompt. Omit the argument to view the current system prompt.\
+System prompts changed in this manner will be lost when you change character. Use settings.yaml for a permanent system prompt.
 
 ### pause:
-USAGE: %pause
+USAGE: %pause \
 Stop posting in-character until the {OPERATOR_STRING}resume command is given.
 
 ### resume:
-USAGE: %resume
+USAGE: %resume \
 Continue posting in-character.
 
 ### stop:
-USAGE: %stop
+USAGE: %stop \
 Terminate the program.
