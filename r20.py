@@ -8,12 +8,15 @@ from selenium.common.exceptions import TimeoutException;
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.remote.webelement import WebElement
 
+import threading
 import os;
-import json;
 import re
+from time import sleep
 
 from messages import MessageTag
 from messages import SYSTEM_TAGS
+
+from globals import *
 
 ROLL20_URL = "https://app.roll20.net"
 ROLL20_LOGIN_URL = ROLL20_URL + "/login"
@@ -41,22 +44,39 @@ class Roll20():
         self.driver = webdriver.Firefox(options=options)
         
         self.driver.get(ROLL20_URL)
-        self.update_cf_clearance(os.environ['R20_CF_CLEARANCE'])
+        self.update_cf_clearance(os.environ[ENV_CF_CLEARANCE])
 
     def __del__(self):
         self.driver.quit()
+
+    def controls_character(self, character: str|None) -> bool:
+        if(character == None):
+            return False
+        assert self._char_select is not None
+        for option in self._char_select.options:
+            if(option.text == character):
+                return True
+        return False
+    
+    def get_player_name(self) -> str|None:
+        assert self._char_select is not None
+        for option in self._char_select.options:
+            value = option.get_attribute('value')
+            if(value != None and 'PLAYER' in value.upper()):
+                return option.text
+        return None
 
     '''Message posting methods'''
 
     # precondition: must already be on app.roll20.net
     def update_cf_clearance(self, token: str) -> None:
-        os.environ['R20_CF_CLEARANCE'] = token
+        os.environ[ENV_CF_CLEARANCE] = token
         self._update_cf_cookie()
 
     def _update_cf_cookie(self) -> None:
         self._cf_clearance_cookie = {
             "name" : "cf_clearance",
-            "value" : os.environ['R20_CF_CLEARANCE'],
+            "value" : os.environ[ENV_CF_CLEARANCE],
             "path" : "/",
             "secure" : True,
             "httpOnly" : True
@@ -82,14 +102,30 @@ class Roll20():
     def _post(self, text: str) -> None:
         assert self._chat_input is not None
         assert self._chat_send is not None
+        self._chat_input.clear()
         self._chat_input.send_keys(text)
         self._chat_send.click()
+
+    def idle(self, as_character: str, stop_event : threading.Event):
+        assert self._chat_input is not None
+        assert self._char_select is not None
+        try:
+            self._char_select.select_by_visible_text(as_character)
+        except:
+            pass
+        self._chat_input.send_keys('a')
+        while(not stop_event.is_set()):
+            self._chat_input.send_keys('a')
+            sleep(0.3)
+            self._chat_input.send_keys(Keys.BACKSPACE)
+            sleep(0.3)
+        self._chat_input.send_keys(Keys.BACKSPACE)
 
     '''Message reading methods'''
 
     # get the last n messages. Will only scan messages up to the top of the editor (won't scan through chat archive)
     # If n is greater than the number of visible messages, will only return visible messages. Messages with ignored tags won't be counted.
-    def get_last_n_messages(self, n: int, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[tuple]:
+    def get_last_n_messages(self, n: int, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[list]:
         assert self._chat_window is not None
 
         ignore_tags = MessageTag.to_blacklist(blacklist=tag_blacklist, whitelist=tag_whitelist)
@@ -113,7 +149,7 @@ class Roll20():
 
     # get a list of messages posted after the message with the provided ID. Will only scan messages up to the top of the editor (won't scan through chat archive)
     # If the ID can't be found, will return every visible message
-    def get_messages_after_id(self, id: str, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[tuple]:
+    def get_messages_after_id(self, id: str, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[list]:
         assert self._chat_window is not None
 
         ignore_tags = MessageTag.to_blacklist(blacklist=tag_blacklist, whitelist=tag_whitelist)
@@ -128,9 +164,9 @@ class Roll20():
         msg_elems = self._chat_window.find_elements(By.XPATH, f"div[contains(@class,'message')][position() > {position}]")
         return Roll20._extract_message_info_list(msg_elems, ignore_tags)
 
-    # returns a list of tuples of the form (content: str, character: str, id: str, tags: list[MessageTag])
+    # returns a list of lists of the form (content: str, character: str, id: str, tags: list[MessageTag])
     # Will ignore hidden messages, system messages and dice results (unless you change the ignore_tags)
-    def get_all_messages(self, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[tuple]:
+    def get_all_messages(self, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[list]:
         assert self._chat_history is not None
 
         ignore_tags = MessageTag.to_blacklist(blacklist=tag_blacklist, whitelist=tag_whitelist)          
@@ -166,24 +202,28 @@ class Roll20():
     '''Static methods for extracting information from messages'''
 
     # Extracts message information from a list of message WebElements
-    # returns a list of tuples of the form (content: str, character: str, id: str, tags: set[MessageTag])
+    # returns a list of lists of the form (content: str, character: str, id: str, tags: set[MessageTag])
     @staticmethod
-    def _extract_message_info_list(message_elems: list[WebElement], tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[tuple]:
+    def _extract_message_info_list(message_elems: list[WebElement], tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[list]:
         ignore_tags = MessageTag.to_blacklist(blacklist=tag_blacklist, whitelist=tag_whitelist)
         last_character = None
         messages = []
+
+
         for message_elem in message_elems:
             message = Roll20._extract_message_info(message_elem)
             if (MessageTag.CHARACTER in message[3]):
 
                 # If no associated name, inherit from last character message
-                if(message[2] == None):
-                    message[2] = last_character # type: ignore
-                last_character = message[2]
+                if(message[1] == None):
+                    message[1] = last_character # type: ignore
+                last_character = message[1]
 
-                # If still no associated name, log warning
-                if(message[2] == None):
-                    print("Warning: A character message has no character name associated with it")
+                # With this section, these warnings would occur when consecutive messages by one character are split over >1 calls of this method. 
+                # This is dealt with in MessageLog.append_message(), so no need for this
+                # # If still no associated name, but a character message, log warning
+                # if(message[1] == None):
+                #     print("Warning: A character message has no character name associated with it")
 
             messages.append(message)
 
@@ -192,7 +232,7 @@ class Roll20():
         return messages
     
     @staticmethod
-    def _extract_message_info(message_elem: WebElement) -> tuple:
+    def _extract_message_info(message_elem: WebElement) -> list:
         tags = set()
         by = None
         content = message_elem.get_property("innerText")
@@ -205,21 +245,21 @@ class Roll20():
             if(by != None):
                 assert isinstance(content, str)
                 assert isinstance(by, str)
-                content = content.removeprefix('by')
+                content = content.removeprefix(by).strip()
                 by = by.removesuffix(':').removesuffix(' (GM)')
             
         id = message_elem.get_attribute("data-messageid")
 
         tags = Roll20._get_message_tags(message_elem)
-        return(content, by, id, tags)
+        return [content, by, id, tags]
 
     @staticmethod
-    def _filter_unwanted_tags(messages: list[tuple], tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[tuple]:
+    def _filter_unwanted_tags(messages: list[list], tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> list[list]:
         ignore_tags = MessageTag.to_blacklist(blacklist=tag_blacklist, whitelist=tag_whitelist)
         return [msg for msg in messages if not Roll20._has_unwanted_tags(msg, ignore_tags)]
 
     @staticmethod
-    def _has_unwanted_tags(message: tuple, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> bool:
+    def _has_unwanted_tags(message: list, tag_blacklist=SYSTEM_TAGS, tag_whitelist=None) -> bool:
         ignore_tags = MessageTag.to_blacklist(blacklist=tag_blacklist, whitelist=tag_whitelist)
         return any(tag in message[3] for tag in ignore_tags)
 
@@ -282,7 +322,7 @@ class Roll20():
     This token must be supplied by the user, either in the $R20_CF_CLEARANCE environment variable, or when prompted.
     Tokens expire regularly, so you'll have to update it frequently. Alternatively you could use a fork of selenium which can pass Cloudflare checks.
     '''
-    def login(self, email=os.environ["R20_EMAIL"], password=os.environ["R20_PASSWORD"]) -> None:
+    def login(self, email=None, password=None, use_env=True) -> None:
         try:
             # Confirm that the cloudflare test has been passed by checking the title of the page. 
             # This could change, so if the program says that it "Passed Cloudflare check" when it hasn't, see if the title needs updating
@@ -291,6 +331,9 @@ class Roll20():
             cf_retry = False
             while True:
                 try:
+                    # Make sure current $R20_CF_CLEARNCE value is being used
+                    self._update_cf_cookie()
+
                     self.driver.get(ROLL20_LOGIN_URL)
                     WebDriverWait(self.driver, (CF_CLEARANCE_RETRY_TIMEOUT if cf_retry else CF_CLEARANCE_TIMEOUT)).until(EC.none_of(EC.title_contains(TITLE)))
                     break
@@ -305,18 +348,23 @@ class Roll20():
             print("Passed Cloudflare check")
 
             while True:
+                if(use_env):
+                    email = os.environ[ENV_R20_EMAIL]
+                    password = os.environ[ENV_R20_PASSWORD]
+
                 self.driver.find_element(By.ID, "email").send_keys(email)
                 self.driver.find_element(By.ID, "password").send_keys(password)
                 self.driver.find_element(By.ID, "login").click()
                 try:
-                    WebDriverWait(self.driver, LOGIN_TIMEOUT).until(EC.any_of(EC.url_changes(ROLL20_LOGIN_URL)), EC.visibility_of_element_located((By.ID, "login-error")))
+                    WebDriverWait(self.driver, LOGIN_TIMEOUT).until(EC.any_of(EC.url_changes(ROLL20_LOGIN_URL)), EC.visibility_of_element_located((By.ID, "login-error"))) # type: ignore
                 except TimeoutException as e:
                     print(f"login timed out ({LOGIN_TIMEOUT}s)")
                     raise e
                 if(len(self.driver.find_elements(By.ID, "login-error")) == 0):
                     break
                 else:
-                    input("Incorrect email or password. Update the $R20_EMAIL and $R20_PASSWORD environment variables. Press enter to try again.")
+                    email = input("Incorrect email or password. Enter new email: ")
+                    password = input("Incorrect email or password. Enter new password: ")
             
             print("Logged in")
                 
@@ -329,6 +377,7 @@ class Roll20():
         try:
             try:
                 while True:
+                    print('Joining game...')
                     self.driver.get(ROLL20_CAMPAIGN_URL + gameID)
                     WebDriverWait(self.driver, 10).until(EC.any_of(\
                         EC.presence_of_element_located((By.XPATH, "//h1[contains(text(), 'Not Authorized') or contains(text(), 'Not Authorised')] or contains(text(), 'Not Found')]")),\
@@ -339,7 +388,7 @@ class Roll20():
                         gameID = (gameID if new_gameID == "" else new_gameID)
                     else:
                         title = self.driver.find_element(By.TAG_NAME, "title").get_property("innerHTML")
-                        title = re.sub(r"\s\|\sRoll20", "", title).strip()
+                        title = re.sub(r"\s\|\sRoll20", "", title).strip() # type: ignore
 
                         self._initialise_chat()
 

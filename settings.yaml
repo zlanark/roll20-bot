@@ -1,0 +1,54 @@
+# This file is filled with example values. Replace them with your own.
+# Note that the ' (GM)' postfix should be omitted from names.
+
+# The following list acts as a per-game whitelist and a blacklist of who the bot will treat as a character
+# Use the whitelist if you want the default behaviour to be to assume that a name is out-of-character
+# Use the blacklist if you want the default behaviour to be to assume that a name is in-character
+is_character:
+  "[A gameID]":
+    enable_character_whitelist: False
+    enable_character_blacklist: True
+    character_whitelist: [] # put in-character names here
+    character_blacklist: ["GalacticPhoenix88", "MyBotAccount", "StarlightExplorer552", "xxX_TypicalUsername42_Xxx"] # put out-of-character names here
+  "[Another gameID]":
+    enable_character_whitelist: True
+    enable_character_blacklist: False
+    character_whitelist: ["Blueshell", "Grondr", "Ravna Bergsndot", "Flenser", "Woodcarver"] # put in-character names here
+    character_blacklist: [] # put out-of-character names here
+
+# This list controls who can issue commands to the bot, per-game.
+# commands are prefixed with %. Post `%help` in-game for details.
+is_operator:
+  "[A gameID]":
+    enable_operator_whitelist: True
+    enable_operator_blacklist: False
+    operator_whitelist: ['GalacticPhoenix88', 'StarlightExplorer552'] # put operator names here.
+    operator_blacklist: [] # put non-operator names here
+  "[Another gameID]":
+    enable_operator_whitelist: False
+    enable_operator_blacklist: True
+    operator_whitelist: [] # put operator names here.
+    operator_blacklist: ['MyBotAccount', 'Blueshell'] # put non-operator names here
+
+# Note: Only chat-completions models are currently supported
+model: "gpt-4"
+
+# The following are per-character per-game system prompts. These are a good place to describe the setting and the bot's character.
+character_descriptions:
+    "[A gameID]" :
+      "Blueshell" : "This is a TTRPG. You are playing the character of Blueshell, a wheelin', dealin' skroderider. Provide a response for Blueshell."
+      "Ravna Bergsndot" : "This is a TTRPG. You are playing the character of Ravna Bergsndot, an anthropologist from Sjandra Kei. Provide a response for Ravna"
+    "[Another gameID]" :
+      "Grondr" : "You are Grondr, an executive at the Vrinimi Organisation which operates a major relay station in the middle beyond. Provide a response for Grondr."
+
+# Per-game default system prompts. Use `{name}` to refer to the character. 
+default_character_descriptions: 
+  game_independent_default: "This is a TTRPG. You are playing the character of {name}. Provide a response for {name}." # This field is mandatory
+  "[A gameID]" : "This is a TTRPG set in the 'Zones of Thought' universe. You are playing the character of {name}. Provide a response for {name}."
+  "[Another gameID]" : "This is a TTRPG set in the 'Zones of Thought' universe. You are playing the character of {name}. Provide a response for {name}."
+
+# The per-game default name of the character the bot will control. You can change this in-game with the %character command
+# If using the character whitelist, Make sure the bot's character's name is in the character whitelist if you want it to be able to see its own messages
+bot_character_names:
+  "[A gameID]" : "Blueshell"
+  "[Another gameID]" : "Grondr"

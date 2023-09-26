@@ -1,4 +1,4 @@
 selenium==4.10.0
 openai
-re
-os
+python-dotenv
+PyYAML
