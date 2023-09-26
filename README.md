@@ -34,6 +34,20 @@ If you want to modify this program to use something other than the OpenAI API, o
   ```bash
   python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
   ```
+
+## Environment Variables
+roll20-bot uses the following environment variables:
+- `$R20_CF_CLEARANCE` to store a [cf_clearance token](#cf_clearance)
+- `$OPENAI_API_KEY` to store an OpenAI API key.
+- `$R20_EMAIL` to store the email associated with the account through which the bot acts.
+- `$R20_PASSWORD`to store the password of the account through which the bot acts.
+\
+These environment variables can be initialised:
+- Through the associated [command-line arguments](#command-line-arguments).
+- With a [.env file](https://pypi.org/project/python-dotenv/) placed in the same directory as `main.py`. To enable the use of the `.env` file start the program with the `--env` argument.
+- Elsewhere before running the program.
+Command-line arguments overide the `.env` file, which in turn overrides pre-existing environment variable values.
+
 ## Command Line Arguments
 ```
 usage: python main.py [-h] [-c CF_CLEARANCE] [-k APIKEY] [-g GAMEID] [-u USERNAME] [-p PASSWORD] [-e] [-x]
@@ -59,16 +73,6 @@ Note: command-line arguments will override environment variables
 
 ## Game ID
 The `--gameID` argument takes the ID of the Roll20 game you want the bot to connect to. You can find this ID by opening you campaign/game's page and copying it out of the URL. The URL should be of the form `http(s)://app.roll20.net/campaigns/details/[Your game's ID]/[Your game's name]`.
-
-## Environment Variables
-roll20-bot uses the following environment variables:
-- `$R20_CF_CLEARANCE` to store a [cf_clearance token](#cf_clearance)
-- `$OPENAI_API_KEY` to store an OpenAI API key.
-- `$R20_EMAIL` to store the email associated with the account through which the bot acts.
-- `$R20_PASSWORD`to store the password of the account through which the bot acts.
-\
-These environment variables can be initialised through the associated [command-line arguments](#command-line-arguments), or with a [.env file](https://pypi.org/project/python-dotenv/) placed in the same directory as `main.py`. To enable the use of the `.env` file start the program with the `--env` argument.
-Command-line arguments overide the `.env` file, which in turn overrides pre-existing environment variable values.
 
 ## cf_clearance
 This program does not use the Roll20 API. Instead, it uses browser automation ([selenium webdriver](https://www.selenium.dev/)) to interact with the Roll20 GUI. Roll20 uses [Cloudflare challenges](https://developers.cloudflare.com/firewall/cf-firewall-rules/cloudflare-challenges/) to keep out automated accounts. When a challenge is passed, that user is given [a cookie named `cf_clearance`](https://developers.cloudflare.com/waf/tools/challenge-passage/#how-it-works) containing a token which allows them to continue using the site without having to solve future challenges. After about 30 minutes, this cookie expires and the challenge will have to be completed again (though the account won't be interupted in-game).\
