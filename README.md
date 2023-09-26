@@ -13,6 +13,7 @@ If you want to modify this program to use something other than the OpenAI API, o
 - Firefox
 - A Roll20 account
 - An OpenAI API Key
+- Money for all those API calls
 
 ## Setup
 1. Have:
