@@ -101,6 +101,8 @@ Defines which character the bot will play by default in each game. This can be c
 ## In-Game Commands
 The bot can be operated through Roll20 chat. You must specify who is allowed to issue commands for each game in the `is_operator` section of the `settings.yaml` file.
 Commands must be prefixed with `%`.
+Execute a command with `--help` to see its help message.
+The escape character is `\`.
 
 ### help:
 USAGE: %help
@@ -129,8 +131,3 @@ Continue posting in-character.
 ### stop:
 USAGE: %stop
 Terminate the program.
-
-Execute a command with `--help` to see its help message.
-The escape character is `\`.
-
-              
