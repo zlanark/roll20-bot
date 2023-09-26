@@ -76,7 +76,7 @@ This program does not use the Roll20 API. Instead, it uses browser automation ([
 Selenium can't pass Cloudflare challenges (though there exist forks which can - install one of those if you want to). To circumvent this, a `cf_clearance` token can be taken from another browser that *can* pass Cloudflare challenges and then that token can be used in the automated browser. This token is the value passed into roll20-bot's `--cf_clearance` argument or put in the `$R20_CF_CLEARANCE` environment variable (note: command-line arguments will override environment variables). To get a token:
 1. Open a browser (not Internet Explorer ffs)
 2. Open a new private/incognito window
-3. Connect to [app.roll20.net]
+3. Connect to [app.roll20.net](https://app.roll20.net)
 4. Open 'Developer Tools' (or whatever it's called in your browser)
 5. Open the 'Storage' tab (or wherever you can view the contents of cookies in your browser)
 6. Open the 'Cookies' dropdown on the left sidebar and select the `https://app.roll20.net` option
