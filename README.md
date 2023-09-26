@@ -37,13 +37,12 @@ If you want to modify this program to use something other than the OpenAI API, o
 
 ## Environment Variables
 roll20-bot uses the following environment variables:
-- `$R20_CF_CLEARANCE` to store a [cf_clearance token](#cf_clearance)
+- `$R20_CF_CLEARANCE` to store a [cf_clearance token](#cf_clearance).
 - `$OPENAI_API_KEY` to store an OpenAI API key.
 - `$R20_EMAIL` to store the email associated with the account through which the bot acts.
 - `$R20_PASSWORD`to store the password of the account through which the bot acts.
 
 
-\ 
 These environment variables can be initialised:
 - Through the associated [command-line arguments](#command-line-arguments).
 - With a [.env file](https://pypi.org/project/python-dotenv/) placed in the same directory as `main.py`. To enable the use of the `.env` file start the program with the `--env` argument.
