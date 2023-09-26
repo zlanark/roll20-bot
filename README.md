@@ -3,10 +3,10 @@ Now you can be out-roleplayed by the machines too!
 
 A cludge of a program that uses the OpenAI API and a webdriver to play an AI character in a Roll20 game.
 Features:
-- A bot interface which can be accessed in-game with the command prefix `%`. see [In-Game Commands](#in-game-commands).
+- A bot interface which can be accessed in-game with the command prefix `%`. See [In-Game Commands](#in-game-commands).
 - Per-game, per-character system prompts (i.e. character + setting descriptions)
 
-If you want to modify this to use something other than the OpenAI API, override the `get_response()` method in `generator.py`.
+If you want to modify this program to use something other than the OpenAI API, override the `get_response()` method in `generator.py`.
 
 ## Requirements
 - Python == 3.11.5
