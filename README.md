@@ -102,31 +102,31 @@ Defines which character the bot will play by default in each game. This can be c
 The bot can be operated through Roll20 chat. You must specify who is allowed to issue commands for each game in the `is_operator` section of the `settings.yaml` file.
 Commands must be prefixed with `%`.
 
-###help:
+### help:
 USAGE: %help
 View command help
 
-###poke:
+### poke:
 USAGE: %poke
 Force the bot to respond.
 
-###character: 
+### character: 
 USAGE: %character '[character's display name]'
 Change which character the bot is controlling.
 
-###system:
+### system:
 USAGE: %system '[new system prompt]'
 Change the system prompt.
 
-###pause:
+### pause:
 USAGE: %pause
 Stop posting in-character until the {OPERATOR_STRING}resume command is given.
 
-###resume:
+### resume:
 USAGE: %resume
 Continue posting in-character.
 
-###stop:
+### stop:
 USAGE: %stop
 Terminate the program.
 
