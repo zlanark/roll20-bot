@@ -17,7 +17,7 @@ parser.add_argument('-k', '--apikey', help=f'openAI API key. Alternatively, put 
 parser.add_argument('-g', '--gameID', help='ID of the game to be joined')
 parser.add_argument('-u', '--username', help=f"Roll20 email. Alternatively, put this in the environment variable ${ENV_R20_EMAIL})")
 parser.add_argument('-p', '--password', help=f"Roll20 password. Alternatively, put this in a environment variable ${ENV_R20_PASSWORD}")
-parser.add_argument('-e', '--env', action='store_true', help="enable the use of the .env file for initialising environment variables")
+parser.add_argument('-e', '--env', action='store_true', help="enable the use of a .env file for initialising environment variables")
 parser.add_argument('-x', '--headless', action='store_true', help='Start the webdriver in headless mode')
 
 def main():
