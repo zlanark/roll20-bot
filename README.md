@@ -90,7 +90,7 @@ Roll20's websource does not differentiate between the originators of messages ex
 Each game is identified by its ID. If `enable_character_whitelist` is True, then any messages from names in `character_whitelist` will be considered as in-character, and all others as out-of-character. If `enable_character_blacklist` is True, then any messages from names in `character_blacklist` will be considered as out-of-character, and all others as in-character. If both `enable_character_whitelist` and `enable_character_blacklist` are True, then the whitelist will be applied minus any names in the blacklist.
 
 ### is_operator
-The bot can be issued [commands](#in-game-commands) through Roll20 chat. You must specify who is allowed to issue commands for each game by adding the names of operators/non-operators to your game's operator whitelist/blacklist under `is_operator`. This works in the same way as [`is_character`](#is_character).\
+The bot can be issued [commands](#in-game-commands) through Roll20 chat. You must specify who is allowed to issue commands for each game by adding the names of operators/non-operators to your game's operator whitelist/blacklist under `is_operator`. This works in the same way as [`is_character`](#is_character).
 
 Important note: Roll20's websource does not differentiate between the originators of messages except by image and name. So this program only uses names to tell apart different accounts and different characters. Thus if more than one person or character shares the same in-chat name, then roll20-bot will treat them as the same account/character. If a non-operator changes the name of their account or character to that of an operator, they can then issue commands. So if you were counting on being able to keep the power of operator out of the hands of your co-players, it would be best to just disable it (`enable_operator_whitelist : True` and `operator_whitelist : []`).
 
@@ -100,7 +100,7 @@ Which GPT model to use. See https://platform.openai.com/docs/models/overview for
 Per-game, per-character system prompts. The system prompt is a good place to describe how you want the bot to behave, as well as a character and setting description. Games are identified by their ID and characters by their name.
 
 ### default_character_descriptions:
-If the bot is playing a character whose name is not found under a that game's section in [`character_descriptions`](#character_descriptions), then it will fall back to this. Each game has it's own default, identified by game ID. If the game's ID is not listed here then `default_character_descriptions.game_independent_default` will be used instead. Use `{name}` to refer to the character; it will be substituted with the character's name at runtime.
+If the bot is playing a character whose name is not found under that game's section in [`character_descriptions`](#character_descriptions), then it will fall back to this. Each game has it's own default, identified by game ID. If the game's ID is not listed here then `default_character_descriptions.game_independent_default` will be used instead. Use `{name}` to refer to the character; it will be substituted with the character's name at runtime.
 
 ### bot_character_names
 Defines which character the bot will play by default in each game. This can be changed during the game with the in-game `%character` command. Make sure the bot's Roll20 account has permission to play as the specified character.
@@ -108,7 +108,7 @@ Defines which character the bot will play by default in each game. This can be c
 ## In-Game Commands
 The bot can be operated through Roll20 chat. You must specify who is allowed to issue commands for each game in the `is_operator` section of the `settings.yaml` file.
 Commands must be prefixed with `%`.
-Execute a command with `--help` to see its help message.
+Execute a command with the `--help` argument to see its help message.
 The escape character is `\`.
 
 ### help:
