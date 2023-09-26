@@ -33,19 +33,6 @@ If you want to modify this to use something other than the OpenAI API, override 
   ```bash
   python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
   ```
-## Game ID
-The `--gameID` argument takes the ID of the Roll20 game you want the bot to connect to. You can find this ID by opening you campaign/game's page and copying it out of the URL. The URL should be of the form `http(s)://app.roll20.net/campaigns/details/[Your game's ID]/[Your game's name]`.
-
-## Environment Variables
-roll20-bot uses the following environment variables:
-- `$R20_CF_CLEARANCE` to store a [cf_clearance token](#cf_clearance)
-- `$OPENAI_API_KEY` to store an OpenAI API key.
-- `$R20_EMAIL` to store the email associated with the account through which the bot acts.
-- `$R20_PASSWORD`to store the password of the account through which the bot acts.
-
-These environment variables can be initialised through the associated [command-line arguments](#command-line-arguments), or with a [.env file](https://pypi.org/project/python-dotenv/) placed in the same directory as `main.py`. To enable the use of the `.env` file start the program with the `--env` argument.
-Command-line arguments overide the `.env` file, which in turn overrides pre-existing environment variable values.
-
 ## Command Line Arguments
 ```
 usage: python main.py [-h] [-c CF_CLEARANCE] [-k APIKEY] [-g GAMEID] [-u USERNAME] [-p PASSWORD] [-e] [-x]
@@ -69,6 +56,19 @@ options:
 ```
 Note: command-line arguments will override environment variables 
 
+## Game ID
+The `--gameID` argument takes the ID of the Roll20 game you want the bot to connect to. You can find this ID by opening you campaign/game's page and copying it out of the URL. The URL should be of the form `http(s)://app.roll20.net/campaigns/details/[Your game's ID]/[Your game's name]`.
+
+## Environment Variables
+roll20-bot uses the following environment variables:
+- `$R20_CF_CLEARANCE` to store a [cf_clearance token](#cf_clearance)
+- `$OPENAI_API_KEY` to store an OpenAI API key.
+- `$R20_EMAIL` to store the email associated with the account through which the bot acts.
+- `$R20_PASSWORD`to store the password of the account through which the bot acts.
+
+These environment variables can be initialised through the associated [command-line arguments](#command-line-arguments), or with a [.env file](https://pypi.org/project/python-dotenv/) placed in the same directory as `main.py`. To enable the use of the `.env` file start the program with the `--env` argument.
+Command-line arguments overide the `.env` file, which in turn overrides pre-existing environment variable values.
+
 ## cf_clearance
 This program does not use the Roll20 API. Instead, it uses browser automation ([selenium webdriver](https://www.selenium.dev/)) to interact with the Roll20 GUI. Roll20 uses [Cloudflare challenges](https://developers.cloudflare.com/firewall/cf-firewall-rules/cloudflare-challenges/) to keep out automated accounts. When a challenge is passed, that user is given [a cookie named `cf_clearance`](https://developers.cloudflare.com/waf/tools/challenge-passage/#how-it-works) containing a token which allows them to continue using the site without having to solve future challenges. After about 30 minutes, this cookie expires and the challenge will have to be completed again (though the account won't be interupted in-game).
 
@@ -86,15 +86,19 @@ Selenium can't pass Cloudflare challenges (though there exist forks which can - 
 This file is filled with example values. Replace them with your own.
 ### is_character
 Roll20's websource does not differentiate between the originators of messages except by image (which can often change mid-game) and name. Thus roll20-bot cannot differentiate between the originators of messages except by their displayed names. It also cannot differentiate between player accounts and characters - this information needs to be specified explicitly on a per-game basis. Each game is identified by its ID. If `enable_character_whitelist` is True, then any messages from names in `character_whitelist` will be considered as in-character, and all others as out-of-character. If `enable_character_blacklist` is True, then any messages from names in `character_blacklist` will be considered as out-of-character, and all others as in-character. If both `enable_character_whitelist` and `enable_character_blacklist` are True, then the whitelist will be applied minus any names in the blacklist.
+
 ### is_operator
 The bot can be operated through Roll20 chat. You must specify who is allowed to issue commands for each game by adding the names of operators/non-operators to your game's operator whitelist/blacklist under `is_operator`. This works in the same way as [`is_character`](#is_character).
 Important note: Roll20's websource does not differentiate between the originators of messages except by image and name. So this program only uses names to tell apart different accounts and different characters. Thus if more than one person or character shares the same in-chat name, then roll20-bot will treat them as the same account/character. If a non-operator changes the name of their account or character to that of an operator, they can then issue commands. So if you were counting on being able to keep the power of operator out of the hands of your co-players, it would be best to just disable it (`enable_operator_whitelist : True` and `operator_whitelist : []`).
+
 ### model
 Which GPT model to use. See https://platform.openai.com/docs/models/overview for a list of models strings. Note: Currently, only chat-completions models work.
 ### character_descriptions:
 Per-game, per-character system prompts. The system prompt is a good place to describe how you want the bot to behave, as well as a character and setting description. Games are identified by their ID and characters by their name.
+
 ### default_character_descriptions:
 If the bot is playing a character whose name is not found under a that game's section in [`character_descriptions`](#character_descriptions), then it will fall back to this. Each game has it's own default, identified by game ID. If the game's ID is not listed here then `default_character_descriptions.game_independent_default` will be used instead. Use `{name}` to refer to the character; it will be substituted with the character's name at runtime.
+
 ### bot_character_names
 Defines which character the bot will play by default in each game. This can be changed during the game with the in-game `%character` command. Make sure the bot's Roll20 account has permission to play as the specified character.
 
