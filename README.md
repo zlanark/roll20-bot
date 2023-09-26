@@ -8,23 +8,31 @@ Features:
 
 If you want to modify this to use something other than the OpenAI API, override the `get_response()` method in `generator.py`.
 
+## Requirements
+- Python == 3.11.5
+- Firefox
+- A Roll20 account
+- An OpenAI API Key
+
 ## Setup
-1. Have [python](https://www.python.org/downloads/release/python-3115/) installed (I've only tested this in Python 3.11.5) and in your PATH
-2. Have [git](https://git-scm.com/) installed and in your PATH
+1. Have:
+  - [python](https://www.python.org/downloads/release/python-3115/) installed (I've only tested this in Python 3.11.5) and in your $PATH
+  - [Firefox](https://www.mozilla.org/en-US/firefox/) installed and in your $PATH
+  - [git](https://git-scm.com/) installed and in your $PATH
 3. Open a terminal, `cd` into the directory you want to install into, and clone this repository into it:
-```bash
-cd '[replace with your install directory]'
-git clone https://github.com/zlanark/roll20-bot.git
-cd roll20-bot
-```
+  ```bash
+  cd '[replace with your install directory]'
+  git clone https://github.com/zlanark/roll20-bot.git
+  cd roll20-bot
+  ```
 4. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+  ```bash
+  pip install -r requirements.txt
+  ```
 5. Run `main.py` to start the program:
-```bash
-python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
-```
+  ```bash
+  python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
+  ```
 ## Game ID
 The `--gameID` argument takes the ID of the Roll20 game you want the bot to connect to. You can find this ID by opening you campaign/game's page and copying it out of the URL. The URL should be of the form `http(s)://app.roll20.net/campaigns/details/[Your game's ID]/[Your game's name]`.
 
