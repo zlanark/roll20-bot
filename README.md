@@ -81,14 +81,13 @@ The `--gameID` argument takes the ID of the Roll20 game you want the bot to conn
 This program does not use the Roll20 API. Instead, it uses browser automation ([selenium webdriver](https://www.selenium.dev/)) to interact with the Roll20 GUI. Roll20 uses [Cloudflare challenges](https://developers.cloudflare.com/firewall/cf-firewall-rules/cloudflare-challenges/) to keep out automated accounts. When a challenge is passed, that user is given [a cookie named `cf_clearance`](https://developers.cloudflare.com/waf/tools/challenge-passage/#how-it-works) containing a token which allows them to continue using the site without having to solve future challenges. After about 30 minutes, this cookie expires and the challenge will have to be completed again (though the account won't be interupted in-game).
 
 Selenium can't pass Cloudflare challenges (though there exist forks which can - install one of those if you want to). To circumvent this, a `cf_clearance` token can be taken from another browser that *can* pass Cloudflare challenges and then that token can be used in the automated browser. This token is the value passed into roll20-bot's `--cf_clearance` argument or put in the `$R20_CF_CLEARANCE` environment variable. To get a token:
-1. Open a browser (not Internet Explorer ffs)
-2. Open a new private/incognito window
-3. Connect to [app.roll20.net](https://app.roll20.net)
-4. Open 'Developer Tools' (or whatever it's called in your browser)
-5. Open the 'Storage' tab (or wherever you can view the contents of cookies in your browser)
-6. Open the 'Cookies' dropdown on the left sidebar and select the `https://app.roll20.net` option
-7. Search for `cf_clearance` and copy its `value` field
-8. Use this value for the `--cf_clearance` argument or the `$R20_CF_CLEARANCE` environment variable
+1. Open a browser
+2. Connect to [app.roll20.net](https://app.roll20.net)
+3. Open 'Developer Tools' (or whatever it's called in your browser)
+4. Open the 'Storage' tab (or wherever you can view the contents of cookies in your browser)
+5. Open the 'Cookies' dropdown on the left sidebar and select the `https://app.roll20.net` option
+6. Search for `cf_clearance`. Delete this cookie, and reload the page. It should re-appear with a new value. copy its `value` field
+7. Use this value for the `--cf_clearance` argument or in the `$R20_CF_CLEARANCE` environment variable
 
 ## settings.yaml
 This file is filled with example values. Replace them with your own.
