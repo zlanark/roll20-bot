@@ -32,7 +32,7 @@ If you want to modify this program to use something other than the OpenAI API, o
 4. Fill in [settings.yaml](#settings.yaml)
 5. Run `main.py` to start the program:
   ```bash
-  python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
+  python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID]
   ```
 
 ## Environment Variables
