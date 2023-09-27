@@ -29,7 +29,8 @@ If you want to modify this program to use something other than the OpenAI API, o
   ```bash
   pip install -r requirements.txt
   ```
-4. Run `main.py` to start the program:
+4. Fill in [settings.yaml](#settings.yaml)
+5. Run `main.py` to start the program:
   ```bash
   python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
   ```
