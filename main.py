@@ -1,12 +1,11 @@
-import argparse
-from r20 import Roll20
 import os
+
+from r20 import Roll20
 from controller import Controller
 from globals import *
 
+import argparse
 from dotenv import load_dotenv, find_dotenv
-import yaml
-
 
 parser = argparse.ArgumentParser(
     prog='r20-bot',
