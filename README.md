@@ -19,17 +19,17 @@ If you want to modify this program to use something other than the OpenAI API, o
   - [python](https://www.python.org/downloads/release/python-3115/) installed (I've only tested this in Python 3.11.5. Other versions may work) and in your $PATH
   - [Firefox](https://www.mozilla.org/en-US/firefox/) installed and in your $PATH
   - [git](https://git-scm.com/) installed and in your $PATH
-3. Open a terminal, `cd` into the directory you want to install into, and clone this repository into it:
+2. Open a terminal, `cd` into the directory you want to install into, and clone this repository into it:
   ```bash
   cd '[replace with your install directory]'
   git clone https://github.com/zlanark/roll20-bot.git
   cd roll20-bot
   ```
-4. Install dependencies:
+3. Install dependencies:
   ```bash
   pip install -r requirements.txt
   ```
-5. Run `main.py` to start the program:
+4. Run `main.py` to start the program:
   ```bash
   python main.py -k [OpenAI API Key] -u [Roll20 username] -p [Roll20 password] -g [Roll20 game ID] -x
   ```
