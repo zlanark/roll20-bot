@@ -9,15 +9,14 @@ Features:
 If you want to modify this program to use something other than the OpenAI API, override the `get_response()` method in `generator.py`.
 
 ## Requirements
-- Python == 3.11.5
+- Python 3.11.x
 - Firefox
 - A Roll20 account
 - An OpenAI API Key
-- Money for all those API calls
 
 ## Setup
 1. Have:
-  - [python](https://www.python.org/downloads/release/python-3115/) installed (I've only tested this in Python 3.11.5) and in your $PATH
+  - [python](https://www.python.org/downloads/release/python-3115/) installed (I've only tested this in Python 3.11.5. Other versions may work) and in your $PATH
   - [Firefox](https://www.mozilla.org/en-US/firefox/) installed and in your $PATH
   - [git](https://git-scm.com/) installed and in your $PATH
 3. Open a terminal, `cd` into the directory you want to install into, and clone this repository into it:
