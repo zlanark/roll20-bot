@@ -1,7 +1,7 @@
 # roll20-bot
 Now you can be out-roleplayed by the machines too!
 
-A cludge of a program that uses the OpenAI API and a webdriver to play an AI character in a Roll20 game.
+Uses the OpenAI API and a webdriver to play an AI character in a Roll20 game.
 Features:
 - A bot interface which can be accessed in-game with the command prefix `%`. See [In-Game Commands](#in-game-commands).
 - Per-game, per-character system prompts (i.e. character + setting descriptions)
