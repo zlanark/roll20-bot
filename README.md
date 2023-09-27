@@ -17,7 +17,7 @@ If you want to modify this program to use something other than the OpenAI API, o
 ## Setup
 1. Have:
   - [python](https://www.python.org/downloads/release/python-3115/) installed (I've only tested this in Python 3.11.5. Other versions may work) and in your $PATH
-  - [Firefox](https://www.mozilla.org/en-US/firefox/) installed and in your $PATH
+  - [Firefox](https://www.mozilla.org/en-US/firefox/) installed
   - [git](https://git-scm.com/) installed and in your $PATH
 2. Open a terminal, `cd` into the directory you want to install into, and clone this repository into it:
   ```bash
