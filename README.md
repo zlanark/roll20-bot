@@ -102,7 +102,7 @@ The bot can be issued [commands](#in-game-commands) through Roll20 chat. You mus
 Important note: Roll20's websource does not differentiate between the originators of messages except by image and name. So this program only uses names to tell apart different accounts and different characters. Thus if more than one person or character shares the same in-chat name, then roll20-bot will treat them as the same account/character. If a non-operator changes the name of their account or character to that of an operator, they can then issue commands. So if you were counting on being able to keep the power of operator out of the hands of your co-players, it would be best to just disable it (`enable_operator_whitelist : True` and `operator_whitelist : []`).
 
 ### model
-Which GPT model to use. See https://platform.openai.com/docs/models/overview for a list of models strings. Note: Currently, only chat-completions models work.
+Which GPT model to use. See https://platform.openai.com/docs/models/overview for a list of model strings. Note: Currently, only chat-completions models work.
 ### character_descriptions:
 Per-game, per-character system prompts. The system prompt is a good place to describe how you want the bot to behave, as well as a character and setting description. Games are identified by their ID and characters by their name.
 
