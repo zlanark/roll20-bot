@@ -48,7 +48,7 @@ These environment variables can be initialised:
 - Elsewhere before running the program.
 
 \
-Command-line arguments overide the `.env` file, which in turn overrides pre-existing environment variable values.
+Command-line arguments override the `.env` file, which in turn overrides pre-existing environment variable values.
 
 ## Command Line Arguments
 ```
