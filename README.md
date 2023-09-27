@@ -75,7 +75,7 @@ options:
 Note: command-line arguments will override environment variables 
 
 ## Game ID
-The `--gameID` argument takes the ID of the Roll20 game you want the bot to connect to. You can find this ID by opening you campaign/game's page and copying it out of the URL. The URL should be of the form `http(s)://app.roll20.net/campaigns/details/[Your game's ID]/[Your game's name]`.
+The `--gameID` argument takes the ID of the Roll20 game you want the bot to connect to. You can find this ID by opening you campaign/game's web page and copying it out of the URL. The URL should be of the form `http(s)://app.roll20.net/campaigns/details/[Your game's ID]/[Your game's name]`.
 
 ## cf_clearance
 This program does not use the Roll20 API. Instead, it uses browser automation ([selenium webdriver](https://www.selenium.dev/)) to interact with the Roll20 GUI. Roll20 uses [Cloudflare challenges](https://developers.cloudflare.com/firewall/cf-firewall-rules/cloudflare-challenges/) to keep out automated accounts. When a challenge is passed, that user is given [a cookie named `cf_clearance`](https://developers.cloudflare.com/waf/tools/challenge-passage/#how-it-works) containing a token which allows them to continue using the site without having to solve future challenges. After about 30 minutes, this cookie expires and the challenge will have to be completed again (though the account won't be interupted in-game).
